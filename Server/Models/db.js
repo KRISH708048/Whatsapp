@@ -1,5 +1,5 @@
 const { Pool } = require('pg')
-var config = require('../config/config')
+var config = require('../Config/config')
 
 const pool = new Pool({
   user: config.development.database.user,
