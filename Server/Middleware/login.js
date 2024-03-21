@@ -3,9 +3,9 @@ const z = require('zod');
 const JWT_Secret_Key = "1234";
 
 const registerSchema = z.object({
-    username : z.string(),
-    email : z.string().email(),
-    phNumber : z.number().gte(10),
+    name : z.string(),
+    //email : z.string().email(),
+    phoneNumber : z.number().gte(10),
     password : z.string().min(8),
 })
 
