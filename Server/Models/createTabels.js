@@ -30,12 +30,16 @@ const createUsersTableQuery = `
 const createMessagesTableQuery = `
   CREATE TYPE messageType AS ENUM ('text', 'image', 'video');
   CREATE TABLE IF NOT EXISTS messages (
-    message_id SERIAL PRIMARY KEY,
+    message_id SERIAL,
     type messageType NOT NULL,
     content TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     chat_id INT,
-    FOREIGN KEY (chat_id) REFERENCES chats(chat_id)
+    group_id INT,
+    PRIMARY KEY (user_id, message_id),
+    FOREIGN KEY (chat_id) REFERENCES chats(chat_id),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
   )
 `;
 
@@ -59,6 +63,7 @@ const createUsersChatsTableQuery = `
 const createGroupsTableQuery = `
   CREATE TABLE IF NOT EXISTS groups (
     group_id SERIAL PRIMARY KEY,
+    group_name VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `;

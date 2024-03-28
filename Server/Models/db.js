@@ -22,7 +22,7 @@ createTables()
 const query = async (text, params) => {
   try {
     const result = await pool.query(text, params);
-    return result.rows;
+    return result;
   } catch (error) {
     throw new Error(`Error executing query: ${error.message}`);
   }
