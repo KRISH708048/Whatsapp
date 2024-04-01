@@ -1,25 +1,16 @@
 // db.js
 const { Pool } = require('pg');
-const {createTables} = require('./createTabels');
 const dotenv = require('dotenv');
 dotenv.config();
 
-
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
+  // user: process.env.DB_USER,
+  // host: process.env.DB_HOST,
+  // database: process.env.DB_NAME,
+  // password: process.env.DB_PASSWORD,
+  // port: process.env.DB_PORT
+  connectionString:"postgresql://User_owner:RvbA3f1qZzjk@ep-soft-bird-a1zpc4ts-pooler.ap-southeast-1.aws.neon.tech/User?sslmode=require"
 });
-
-createTables()
-  .then(() => {
-    console.log('Tables created successfully');
-    return query('SELECT * FROM users');
-  })
-  .then((result) => console.log('Query result:', result))
-  .catch((error) => console.error('Error:', error.message));
 
 const query = async (text, params) => {
   try {
@@ -29,5 +20,6 @@ const query = async (text, params) => {
     throw new Error(`Error executing query: ${error.message}`);
   }
 };
+
 
 module.exports = { query };
