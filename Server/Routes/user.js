@@ -1,11 +1,13 @@
 const express = require('express');
+const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { authMiddleware, register, signIn } = require('../Middleware/login');
 const { query } = require('../models/db');
 const app = express();
+
 const JWT_SECRET_KEY = "hello@123";
-app.use(express.json());
+
 
 const findUserQuery = `
       SELECT * FROM users WHERE name = $1;
@@ -16,7 +18,7 @@ const matchUserQuery = `
     `;
 
 // sign-up   
-app.post('/sign-up', register, async (req, res) => {
+router.post('/sign-up', register, async (req, res) => {
   const { username, phoneNumber, password, confirmPassword, gender } = req.body;
 
   if (password !== confirmPassword) {
@@ -65,7 +67,7 @@ app.post('/sign-up', register, async (req, res) => {
 });
 
 // sign -in 
-app.post('/sign-in', signIn, async (req, res) => {
+router.post('/sign-in', signIn, async (req, res) => {
 
   const { username, password } = req.body;
   try {
@@ -100,7 +102,7 @@ app.post('/sign-in', signIn, async (req, res) => {
 
 
 // get all groups and chats
-app.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   const userId = req.user.userId;
   let groups = [];
   let chats = [];
@@ -139,3 +141,8 @@ app.get('/', authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+module.exports = router
+// app.listen(port,()=>{
+//   console.log("running on port ",port);
+// })

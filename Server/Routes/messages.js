@@ -1,13 +1,12 @@
 const express = require('express');
+const router = express.Router();
 const jwt = require('jsonwebtoken');
-const app = express();
 const JWT_SECRET_KEY = "hello@123";
 const { authMiddleware } = require('../Middleware/login');
 const { query } = require('../models/db');
 
-app.use(express.json());
 
-app.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
     const userId = req.user.userId;
     const chatId = req.params.id;
 
@@ -33,6 +32,8 @@ app.get('/:id', authMiddleware, async (req, res) => {
     }
 });
 
-app.post("/send/:id",authMiddleware,async (req,res)=>{
+router.post("/send/:id",authMiddleware,async (req,res)=>{
     
 })
+
+module.exports = router

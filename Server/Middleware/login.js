@@ -9,9 +9,9 @@ const registerSchema = z.object({
     gender : z.enum(["Male" , "Female"])
 })
 
-const signInSchema = zod.object({
-    username: zod.string().email(),
-    password: zod.string().length(8)
+const signInSchema = z.object({
+    username: z.string().email(),
+    password: z.string().length(8)
 });
 
 const signIn = (req,res,next)=>{

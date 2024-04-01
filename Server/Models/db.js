@@ -1,14 +1,16 @@
 // db.js
 const { Pool } = require('pg');
 const {createTables} = require('./createTabels');
-const config = require('../Config/config');
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 const pool = new Pool({
-  user: config.development.database.user,
-  host: config.development.database.host,
-  database: config.development.database.database,
-  password: config.development.database.password,
-  port: config.development.database.port
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT
 });
 
 createTables()
