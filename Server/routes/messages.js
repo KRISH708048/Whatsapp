@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const JWT_SECRET_KEY = "hello@123";
 const { authMiddleware } = require('../Middleware/login');
-const { query } = require('../models/db');
+const { pool } = require('../models/db');
 
 
 router.get('/:id', authMiddleware, async (req, res) => {
@@ -18,7 +18,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
     `;
 
     try {
-        let conversations = await query(getMessageQuery, [userId, chatId]);
+        let conversations = await pool.query(getMessageQuery, [userId, chatId]);
         conversations = conversations.rows.map(message => ({
             sender_id: message.user_id,
             receiver_id: message.chat_id,

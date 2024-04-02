@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
     type messageType NOT NULL,
     content TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,
     chat_id INT,
     group_id INT,
     PRIMARY KEY (user_id, message_id),
@@ -67,12 +68,12 @@ CREATE TABLE IF NOT EXISTS users_groups (
   
   const createTables = async () => {
     try {
-      await query(createUsersTableQuery);
-      await query(createMessagesTableQuery);
-      await query(createChatsTableQuery);
-      await query(createUsersChatsTableQuery);
-      await query(createGroupsTableQuery);
-      await query(createUsersGroupsTableQuery);
+      await query(createUsersTableQuery,[]);
+      await query(createMessagesTableQuery,[]);
+      await query(createChatsTableQuery,[]);
+      await query(createUsersChatsTableQuery,[]);
+      await query(createGroupsTableQuery,[]);
+      await query(createUsersGroupsTableQuery,[]);
       console.log('All tables created successfully');
     } catch (error) {
       console.error('Error creating tables:', error);

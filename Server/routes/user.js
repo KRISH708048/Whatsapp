@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { authMiddleware, register, signIn } = require('../Middleware/login');
-const { query } = require('../models/db');
+const { pool } = require('../models/db');
 const app = express();
 
 const JWT_SECRET_KEY = "hello@123";
@@ -27,7 +27,7 @@ router.post('/sign-up', register, async (req, res) => {
 
   try {
     const valueUser = [username, password];
-    const existingUser = await query(findUserQuery, valueUser[0]);
+    const existingUser = await pool.query(findUserQuery, valueUser[0]);
     if (existingUser.rows.length > 0) {
       return res.status(403).send("User already exists. Please log in.");
     }
@@ -43,7 +43,7 @@ router.post('/sign-up', register, async (req, res) => {
     `;
 
     const values = [username, phoneNumber, gender, hashedPassword, gender === "Male" ? boyProfilePic : girlProfilePic];
-    const result = await query(insertQuery, values);
+    const result = await pool.query(insertQuery, values);
 
     if (result.rowCount == 0) {
       return res.status(403).json({
@@ -51,7 +51,7 @@ router.post('/sign-up', register, async (req, res) => {
       });
     }
 
-    const matchingUser = await query(matchUserQuery, valueUser);
+    const matchingUser = await pool.query(matchUserQuery, valueUser);
 
     const userId = matchingUser.rows[0].user_id;
     const token = jwt.sign({ userId }, JWT_SECRET_KEY, { expiresIn: '15d' });
@@ -72,11 +72,11 @@ router.post('/sign-in', signIn, async (req, res) => {
   const { username, password } = req.body;
   try {
     const valueUser = [username, password];
-    const existingUser = await query(findUserQuery, valueUser[0]);
+    const existingUser = await pool.query(findUserQuery, valueUser[0]);
     if (existingUser.rows.length === 0) {
       return res.status(403).json({ msg: "sign-up first!" });
     }
-    const matchingUser = await query(matchUserQuery, valueUser);
+    const matchingUser = await pool.query(matchUserQuery, valueUser);
     if (matchingUser.rows.length === 0) {
       return res.status(403).json({
         msg: "Incorrect Username/password!"
@@ -118,7 +118,7 @@ router.get('/', authMiddleware, async (req, res) => {
         WHERE u.user_id = $1
       );
     `;
-    const allGroups = await query(getGroupsQuery, [userId]);
+    const allGroups = await pool.query(getGroupsQuery, [userId]);
     groups = allGroups.rows.map(group => ({ _id: group.group_id, _name: group.group_name }));
 
     const getChatsQuery = `
@@ -130,7 +130,7 @@ router.get('/', authMiddleware, async (req, res) => {
         WHERE user_id = $1
       );
     `;
-    const allChats = await query(getChatsQuery, [userId]);
+    const allChats = await pool.query(getChatsQuery, [userId]);
     chats = allChats.rows.map(chat => ({ _id: chat.chat_id, _name: chat.chat_name }));
 
     const friends = { chats: chats, groups: groups };
@@ -143,6 +143,3 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 module.exports = router
-// app.listen(port,()=>{
-//   console.log("running on port ",port);
-// })
