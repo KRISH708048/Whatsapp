@@ -27,7 +27,7 @@ router.post('/sign-up', register, async (req, res) => {
 
   try {
     const valueUser = [username, password];
-    const existingUser = await pool.query(findUserQuery, valueUser[0]);
+    const existingUser = await pool.query(findUserQuery, [username]);
     if (existingUser.rows.length > 0) {
       return res.status(403).send("User already exists. Please log in.");
     }
@@ -37,8 +37,8 @@ router.post('/sign-up', register, async (req, res) => {
     const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
     const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
     const insertQuery = `
-      INSERT INTO users (name, phoneNumber, gender, password,profilePicture created_at)
-      VALUES ($1, $2, $3, $4,$5 current_timestamp)
+      INSERT INTO users (name, phoneNumber, gender, password, profilePicture, created_at)
+      VALUES ($1, $2, $3, $4,$5, current_timestamp)
       RETURNING user_id, name, phoneNumber, profilePicture;
     `;
 
@@ -71,13 +71,16 @@ router.post('/sign-in', signIn, async (req, res) => {
 
   const { username, password } = req.body;
   try {
+    // const p = await bcrypt.hash(password, 10);
     const valueUser = [username, password];
-    const existingUser = await pool.query(findUserQuery, valueUser[0]);
+    const existingUser = await pool.query(findUserQuery, [username]);
+    const m = await bcrypt.compare(password, existingUser.rows[0].password); 
     if (existingUser.rows.length === 0) {
       return res.status(403).json({ msg: "sign-up first!" });
     }
-    const matchingUser = await pool.query(matchUserQuery, valueUser);
-    if (matchingUser.rows.length === 0) {
+    const matchingUser = await pool.query(findUserQuery, [username]);
+    console.log(matchingUser);
+    if (!m || matchingUser.rows.length === 0) {
       return res.status(403).json({
         msg: "Incorrect Username/password!"
       })
