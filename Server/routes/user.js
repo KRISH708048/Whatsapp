@@ -4,10 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { authMiddleware, register, signIn } = require('../Middleware/login');
 const { pool } = require('../models/db');
-const app = express();
-
-const JWT_SECRET_KEY = "hello@123";
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 const findUserQuery = `
       SELECT * FROM users WHERE name = $1;
