@@ -1,2 +1,4 @@
 ./node_modules
-./Server/Config/config.js
+./Server/env
+
+

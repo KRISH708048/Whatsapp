@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(255) NOT NULL UNIQUE,
   phoneNumber VARCHAR(20) NOT NULL,
   gender genderType NOT NULL,
-  password VARCHAR(50) NOT NULL,
+  password VARCHAR(250) NOT NULL,
   profilePicture VARCHAR(200) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );

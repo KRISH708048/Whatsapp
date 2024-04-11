@@ -27,7 +27,7 @@ router.post('/sign-up', register, async (req, res) => {
     const valueUser = [username, password];
     const existingUser = await pool.query(findUserQuery, [username]);
     if (existingUser.rows.length > 0) {
-      return res.status(403).send("User already exists. Please log in.");
+      return res.status(403).json({ msg : "User already exists. Please log in."});
     }
 
     const saltRounds = 10;
@@ -102,7 +102,7 @@ router.post('/sign-in', signIn, async (req, res) => {
 })
 
 
-// get all groups and chats
+// get all groups and friends
 router.get('/', authMiddleware, async (req, res) => {
   const userId = req.user.userId;
   let groups = [];
@@ -110,7 +110,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
   try {
     const getGroupsQuery = `
-      SELECT group_name 
+      SELECT * 
       FROM groups 
       WHERE group_id IN (
         SELECT ug.group_id 
@@ -123,7 +123,7 @@ router.get('/', authMiddleware, async (req, res) => {
     groups = allGroups.rows.map(group => ({ _id: group.group_id, _name: group.group_name }));
 
     const getChatsQuery = `
-      SELECT name
+      SELECT user_id,name,gender,profilePicture
       FROM users
       WHERE user_id IN (
         SELECT chat_id
@@ -132,9 +132,9 @@ router.get('/', authMiddleware, async (req, res) => {
       );
     `;
     const allChats = await pool.query(getChatsQuery, [userId]);
-    chats = allChats.rows.map(chat => ({ _id: chat.chat_id, _name: chat.chat_name }));
+    chats = allChats.rows.map(chat => ({ _id: chat.user_id, _name: chat.name, _gender: chat.gender , _profilePic: chat.profilePicture }));
 
-    const friends = { chats: chats, groups: groups };
+    const friends = { userFriends: chats, userGroups: groups };
 
     res.status(200).json({ friends });
   } catch (error) {

@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import useSignup from "../../components/hooks/useSignup";
+import { Toaster } from "react-hot-toast";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -8,23 +10,19 @@ const Signup = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
-  const [error, setError] = useState("");
-  // const { loading, login } = useSignup();
 
+  const { loading, signup } = useSignup();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isValidPhoneNumber = /^\d{10}$/.test(phoneNumber);
-    if (!isValidPhoneNumber) {
-      //   alert("Invalid phone number. Please enter a 10-digit number.");
-      setError("Invalid phone number!");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("Password not matches!");
-      return;
-    }
-	setError("");
-    // await signup([username,password,phoneNumber,confirmPassword,gender]);
+    const inputs = {
+      username,
+      phoneNumber,
+      password,
+      confirmPassword,
+      gender,
+    };
+    await signup(inputs);
   };
 
   return (
@@ -128,21 +126,16 @@ const Signup = () => {
           >
             Already have an account?
           </NavLink>
+
           <div className="mx-auto">
-            {error.length == 0 ? (
-              ""
-            ) : (
-              <span className="text-sm text-red-400">{error}</span>
-            )}
-          </div>
-          <div className="mx-auto">
-            <button
-              className="btn w-48 btn-sm mt-2"
-              // disabled={loading}
-            >
-              {/* {loading ? <span className='loading loading-spinner '></span> : "Login"} */}
-              Signup
+            <button className="btn w-48 btn-sm mt-2" disabled={loading}>
+              {loading ? (
+                <span className="loading loading-spinner "></span>
+              ) : (
+                "Sign up"
+              )}
             </button>
+            <Toaster />
           </div>
         </form>
       </div>

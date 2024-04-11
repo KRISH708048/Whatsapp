@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import useLogin from "../../components/hooks/useLogin";
 
-// import useLogin from "../../hooks/useLogin";
 
 const Login = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
-	// const { loading, login } = useLogin();
+	const { loading, login } = useLogin();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// await login(username, password);
+		await login({username, password});
 	};
 
 	return (
@@ -54,10 +54,9 @@ const Login = () => {
 
 					<div className="mx-auto">
 						<button className='mx-auto btn btn-sm  w-48' 
-                        // disabled={loading}
+                        disabled={loading}
                         >
-							{/* {loading ? <span className='loading loading-spinner '></span> : "Login"} */}
-							Login
+							{loading ? <span className='loading loading-spinner '></span> : "Login"}
 						</button>
 					</div>
 				</form>
